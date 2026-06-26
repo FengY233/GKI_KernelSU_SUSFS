@@ -1,0 +1,52 @@
+
+config KSU_SUSFS
+	bool "KernelSU SUSFS support"
+	depends on KSU
+	default y
+	help
+	  Enable SUSFS (Super User Safe File System) for KernelSU.
+
+config KSU_SUSFS_SUS_PATH
+	bool "SUS Path hiding"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_MOUNT
+	bool "SUS Mount hiding"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_KSTAT
+	bool "SUS KStat spoofing"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SPOOF_UNAME
+	bool "Spoof uname"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_ENABLE_LOG
+	bool "Enable SUSFS logging"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS
+	bool "Hide KSU/SUSFS kernel symbols"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+	bool "Spoof kernel cmdline / bootconfig"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_OPEN_REDIRECT
+	bool "File open redirect"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_MAP
+	bool "SUS memory map hiding"
+	depends on KSU_SUSFS
+	default y
