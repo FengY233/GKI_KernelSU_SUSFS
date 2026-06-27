@@ -80,10 +80,6 @@ on:
         default: false
 
       # ==================== 功能开关 ====================
-      use_zram:
-        description: "启用 ZRAM 增强算法"
-        type: boolean
-        default: false
       use_bbg:
         description: "启用 BBG 防格机"
         type: boolean
@@ -141,7 +137,6 @@ jobs:
       kernelsu_variant: ${{ inputs.kernelsu_variant }}
       version: ${{ inputs.version }}
       build_time: ${{ inputs.build_time || '' }}
-      use_zram: ${{ inputs.use_zram }}
       use_bbg: ${{ inputs.use_bbg }}
       use_kpm: ${{ inputs.use_kpm }}
       use_rekernel: ${{ inputs.use_rekernel }}
@@ -160,7 +155,6 @@ jobs:
       kernelsu_variant: ${{ inputs.kernelsu_variant }}
       version: ${{ inputs.version }}
       build_time: ${{ inputs.build_time || '' }}
-      use_zram: ${{ inputs.use_zram }}
       use_bbg: ${{ inputs.use_bbg }}
       use_kpm: ${{ inputs.use_kpm }}
       use_rekernel: ${{ inputs.use_rekernel }}
@@ -179,7 +173,6 @@ jobs:
       kernelsu_variant: ${{ inputs.kernelsu_variant }}
       version: ${{ inputs.version }}
       build_time: ${{ inputs.build_time || '' }}
-      use_zram: ${{ inputs.use_zram }}
       use_bbg: ${{ inputs.use_bbg }}
       use_kpm: ${{ inputs.use_kpm }}
       use_rekernel: ${{ inputs.use_rekernel }}
@@ -198,7 +191,6 @@ jobs:
       kernelsu_variant: ${{ inputs.kernelsu_variant }}
       version: ${{ inputs.version }}
       build_time: ${{ inputs.build_time || '' }}
-      use_zram: ${{ inputs.use_zram }}
       use_bbg: ${{ inputs.use_bbg }}
       use_kpm: ${{ inputs.use_kpm }}
       use_rekernel: ${{ inputs.use_rekernel }}
@@ -217,7 +209,6 @@ jobs:
       kernelsu_variant: ${{ inputs.kernelsu_variant }}
       version: ${{ inputs.version }}
       build_time: ${{ inputs.build_time || '' }}
-      use_zram: ${{ inputs.use_zram }}
       use_bbg: ${{ inputs.use_bbg }}
       use_kpm: ${{ inputs.use_kpm }}
       use_rekernel: ${{ inputs.use_rekernel }}
@@ -310,7 +301,6 @@ jobs:
           echo "SUS_VER=$SUS_VER" >> $GITHUB_ENV
 
           # 功能开关显示
-          echo "LZ4_STATUS=${{ inputs.use_zram && '开启' || '未开启' }}" >> $GITHUB_ENV
           echo "BBG_STATUS=${{ inputs.use_bbg && '支持' || '不支持' }}" >> $GITHUB_ENV
           if [[ "${{ inputs.use_kpm }}" == enabled* ]]; then
             echo "KPM_STATUS=支持" >> $GITHUB_ENV
@@ -504,7 +494,6 @@ jobs:
           | 挂载方式 | $MOUNT_TYPE |
           | LTO | thin |
           | BBG 安全补丁 | $BBG_STATUS |
-          | ZRAM / LZ4KD | $LZ4_STATUS |
           | KPM | $KPM_STATUS |
 
           ### 下载说明

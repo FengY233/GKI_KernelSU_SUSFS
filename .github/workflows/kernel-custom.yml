@@ -85,11 +85,6 @@ on:
         default: false
 
       # ==================== 功能开关 ====================
-      use_zram:
-        description: "启用 ZRAM 增强算法"
-        required: true
-        type: boolean
-        default: false
       use_bbg:
         description: "启用 BBG 防格机"
         required: true
@@ -97,6 +92,16 @@ on:
         default: false
       use_rekernel:
         description: "启用 Re-Kernel 驱动"
+        required: false
+        type: boolean
+        default: false
+      better_net:
+        description: "启用网络功能增强（IPset / IPv6 NAT）"
+        required: false
+        type: boolean
+        default: false
+      tcp_algo:
+        description: "启用 TCP 拥塞控制算法（BBR / Brutal / Vegas 等）"
         required: false
         type: boolean
         default: false
@@ -200,12 +205,13 @@ jobs:
       ksu_variant: ${{ inputs.kernelsu_variant }}
       version: ${{ inputs.version || '' }}
       build_time: ${{ inputs.build_time || '' }}
-      use_zram: ${{ inputs.use_zram }}
       use_bbg: ${{ inputs.use_bbg }}
       use_kpm: ${{ inputs.use_kpm }}
       use_rekernel: ${{ inputs.use_rekernel || false }}
       supp_op: ${{ inputs.supp_op || false }}
       enable_susfs: ${{ !inputs.cancel_susfs }}
+      better_net: ${{ inputs.better_net }}
+      tcp_algo: ${{ inputs.tcp_algo }}
       droidspaces: ${{ inputs.droidspaces || 'off' }}
       droidspaces_ntsync: ${{ inputs.droidspaces_ntsync || false }}
       artifact_upload_mode: ${{ inputs.artifact_upload_mode }}
