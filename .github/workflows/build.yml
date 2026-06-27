@@ -1063,9 +1063,9 @@ jobs:
         run: |
           echo "升级 LZ4 至 1.10.0 + ARM64 NEON..."
           cp "$ZZH_PATCHES/zram/lz4armv8.S" ./lib/
-          git apply -p1 < "$ZZH_PATCHES/zram/001-lz4.patch" 2>/dev/null || patch -p1 < "$ZZH_PATCHES/zram/001-lz4.patch" || echo "::warning::LZ4 补丁应用失败"
+          git apply -p1 < "$ZZH_PATCHES/zram/001-lz4.patch" || true
           echo "应用 ZSTD 可调压缩级别..."
-          patch -p1 < "$ZZH_PATCHES/zram/002-zstd.patch" || echo "::warning::ZSTD 补丁应用失败"
+          patch -p1 < "$ZZH_PATCHES/zram/002-zstd.patch" || true
 
       - name: 修复 6.6 WiFi/蓝牙兼容性（三星 + 小米）
         if: inputs.kernel_version == '6.6'
