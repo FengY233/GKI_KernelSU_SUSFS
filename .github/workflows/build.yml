@@ -1064,8 +1064,11 @@ jobs:
           echo "升级 LZ4 至 1.10.0 + ARM64 NEON..."
           cp "$ZZH_PATCHES/zram/lz4armv8.S" ./lib/
           git apply -p1 < "$ZZH_PATCHES/zram/001-lz4.patch" || true
-          echo "应用 ZSTD 可调压缩级别..."
+          echo "升级 ZSTD 库至 1.5.7 + 可调压缩级别..."
           patch -p1 < "$ZZH_PATCHES/zram/002-zstd.patch" || true
+          # 手动修复 crypto/zstd.c hunk #1（ZSTD_DEF_LEVEL → module_param）
+          # patch 的 hunk #2（zstd_params 函数体）已正常应用，只需补回 hunk #1 缺失的声明
+          perl -i -0777 -pe 's/#define ZSTD_DEF_LEVEL\s+\d+/static uint __read_mostly compression_level = 1;\nmodule_param(compression_level, uint, 0644)/' crypto/zstd.c
 
       - name: 修复 6.6 WiFi/蓝牙兼容性（三星 + 小米）
         if: inputs.kernel_version == '6.6'
