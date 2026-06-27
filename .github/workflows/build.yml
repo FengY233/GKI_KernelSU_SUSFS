@@ -1062,11 +1062,28 @@ jobs:
         working-directory: ${{ env.KERNEL_ROOT }}/common
         run: |
           echo "升级 LZ4 至 1.10.0 + ARM64 NEON..."
-          cp "$ZZH_PATCHES/zram/lz4armv8.S" ./lib/
-          mkdir -p fs/f2fs/lz4armv8
-          cp "$ZZH_PATCHES/zram/lz4armv8.S" fs/f2fs/lz4armv8/
-          git apply -p1 < "$ZZH_PATCHES/zram/001-lz4.patch" || true
-          # ZSTD 库升级已移除（1.5.7 与 AOSP GKI 6.1 不兼容，patch hunk 失败）
+
+          # 1. 替换 include/linux/lz4.h（兼容包装器，引用 lib/lz4 新版头文件）
+          cp -f "$ZZH_PATCHES/zram/include/linux/lz4.h" include/linux/lz4.h
+
+          # 2. 删除旧版 LZ4 源码（已被单文件 lz4.c / lz4hc.c 替代）
+          rm -f lib/lz4/lz4_compress.c lib/lz4/lz4_decompress.c lib/lz4/lz4defs.h lib/lz4/lz4hc_compress.c
+
+          # 3. 拷贝 LZ4 1.10.0 库文件
+          cp -f "$ZZH_PATCHES/zram/lz4/Makefile" lib/lz4/
+          cp -f "$ZZH_PATCHES/zram/lz4/lz4.c" lib/lz4/
+          cp -f "$ZZH_PATCHES/zram/lz4/lz4.h" lib/lz4/
+          cp -f "$ZZH_PATCHES/zram/lz4/lz4hc.c" lib/lz4/
+          cp -f "$ZZH_PATCHES/zram/lz4/lz4hc.h" lib/lz4/
+
+          # 4. ARM64 NEON 加速汇编 + 辅助文件
+          mkdir -p lib/lz4/lz4armv8
+          cp -f "$ZZH_PATCHES/zram/lz4/lz4armv8/"* lib/lz4/lz4armv8/
+
+          # 5. 正则脚本修补 crypto / f2fs / incfs 的 LZ4 解压调用（NEON 条件编译）
+          bash "$ZZH_PATCHES/zram/apply_lz4_neon.sh" || echo "::warning::部分 NEON 补丁未应用（非关键）"
+
+          # ZSTD 库升级已移除（1.5.7 与 AOSP GKI 6.1 不兼容）
           # zram 自带 comp_level 参数已支持 ZSTD 级别 1-22，无需额外补丁
 
       - name: 修复 6.6 WiFi/蓝牙兼容性（三星 + 小米）
