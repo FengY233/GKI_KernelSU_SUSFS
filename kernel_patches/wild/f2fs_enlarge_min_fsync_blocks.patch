@@ -1,0 +1,16 @@
+From 4612e45ba92cbfcaba1e34dc9e744a0f728dfea8 Mon Sep 17 00:00:00 2001
+From: Jesse Chan <jc@linux.com>
+Subject: [PATCH] f2fs: Enlarge min_fsync_blocks to 20
+
+---
+ fs/f2fs/segment.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -777,7 +777,7 @@ static inline int utilization(struct f2fs_sb_info *sbi)
+ #define DEF_MIN_IPU_UTIL	70
+-#define DEF_MIN_FSYNC_BLOCKS	8
++#define DEF_MIN_FSYNC_BLOCKS	20
+ #define DEF_MIN_HOT_BLOCKS	16

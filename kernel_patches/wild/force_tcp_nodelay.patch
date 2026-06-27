@@ -1,0 +1,20 @@
+From 1beff701410d67db2a941319a85c192b50606611 Mon Sep 17 00:00:00 2001
+From: Panchajanya1999 <panchajanya@azure-dev.live>
+Subject: [PATCH] tcp: Force TCP_NODELAY
+
+---
+ net/ipv4/tcp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3549,6 +3549,9 @@ int do_tcp_setsockopt(struct sock *sk, int level, int optname,
+
+ 	sockopt_lock_sock(sk);
+
++	/* Force TCP_NODELAY for low latency */
++	optname=TCP_NODELAY;
++
+ 	switch (optname) {
+ 	case TCP_MAXSEG:

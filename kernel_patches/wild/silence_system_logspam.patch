@@ -1,0 +1,24 @@
+From 82830f5d961c8d2dd43b6093705448cc9dbacb72 Mon Sep 17 00:00:00 2001
+From: atndko <z1281552865@gmail.com>
+Subject: [PATCH] printk: Silence useless system log spam
+
+---
+ kernel/printk/printk.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -797,6 +797,12 @@ static ssize_t devkmsg_write(struct kiocb *iocb, struct iov_iter *from)
+ 		}
+ 	}
+
++	if ((strstr(line, "healthd")) || (strstr(line, "logd")) ||
++		 strstr(line, "dashd")) {
++		kfree(buf);
++		return len;
++	}
++
+ 	devkmsg_emit(facility, level, "%s", line);
+ 	kfree(buf);
+ 	return ret;

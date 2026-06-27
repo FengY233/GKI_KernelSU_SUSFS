@@ -1,0 +1,17 @@
+From 76d6903103f2486f194c92b11a23933595297d3a Mon Sep 17 00:00:00 2001
+From: Panchajanya1999 <rsk52959@gmail.com>
+Subject: [PATCH] f2fs/gc: Reduce GC thread urgent sleep time to 50ms
+
+---
+ fs/f2fs/gc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+--- a/fs/f2fs/gc.h
++++ b/fs/f2fs/gc.h
+@@ -10,7 +10,7 @@
+ 						 * whether IO subsystem is idle
+ 						 * or not
+ 						 */
+-#define DEF_GC_THREAD_URGENT_SLEEP_TIME	500	/* 500 ms */
++#define DEF_GC_THREAD_URGENT_SLEEP_TIME	50	/* 50 ms */
