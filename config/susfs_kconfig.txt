@@ -50,3 +50,28 @@ config KSU_SUSFS_SUS_MAP
 	bool "SUS memory map hiding"
 	depends on KSU_SUSFS
 	default y
+
+config KSU_SUSFS_HAS_MAGIC_MOUNT
+	bool "SUSFS Magic Mount"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT
+	bool "Auto add SUS KSU default mount"
+	depends on KSU_SUSFS_SUS_MOUNT
+	default y
+
+config KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT
+	bool "Auto add SUS bind mount"
+	depends on KSU_SUSFS_SUS_MOUNT
+	default y
+
+config KSU_SUSFS_TRY_UMOUNT
+	bool "Try umount on SUS mounts"
+	depends on KSU_SUSFS_SUS_MOUNT
+	default y
+
+config KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT
+	bool "Auto try umount for bind mounts"
+	depends on KSU_SUSFS_TRY_UMOUNT
+	default y
