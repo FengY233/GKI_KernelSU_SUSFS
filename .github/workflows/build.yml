@@ -1058,7 +1058,7 @@ jobs:
             patch -p1 --forward < "$ACTION_BUILD/patches/unicode_bypass_fix_6.1+.patch" || true
           fi
 
-      - name: 配置 ZRAM LZ4 + ZSTD 补丁
+      - name: 配置 ZRAM LZ4 补丁
         working-directory: ${{ env.KERNEL_ROOT }}/common
         run: |
           echo "升级 LZ4 至 1.10.0 + ARM64 NEON..."
@@ -1066,11 +1066,8 @@ jobs:
           mkdir -p fs/f2fs/lz4armv8
           cp "$ZZH_PATCHES/zram/lz4armv8.S" fs/f2fs/lz4armv8/
           git apply -p1 < "$ZZH_PATCHES/zram/001-lz4.patch" || true
-          echo "升级 ZSTD 库至 1.5.7 + 可调压缩级别..."
-          patch -p1 < "$ZZH_PATCHES/zram/002-zstd.patch" || true
-          # 手动修复 crypto/zstd.c hunk #1（ZSTD_DEF_LEVEL → module_param）
-          # patch 的 hunk #2（zstd_params 函数体）已正常应用，只需补回 hunk #1 缺失的声明
-          perl -i -0777 -pe 's/#define ZSTD_DEF_LEVEL\s+\d+/static uint __read_mostly compression_level = 1;\nmodule_param(compression_level, uint, 0644);/' crypto/zstd.c
+          # ZSTD 库升级已移除（1.5.7 与 AOSP GKI 6.1 不兼容，patch hunk 失败）
+          # zram 自带 comp_level 参数已支持 ZSTD 级别 1-22，无需额外补丁
 
       - name: 修复 6.6 WiFi/蓝牙兼容性（三星 + 小米）
         if: inputs.kernel_version == '6.6'
@@ -1157,6 +1154,23 @@ jobs:
           CONFIG_TCP_CONG_HTCP=y
           CONFIG_TCP_CONG_BRUTAL=y
           EOF
+
+      - name: 游戏内核优化（WildKernels 补丁栈）
+        working-directory: ${{ env.KERNEL_ROOT }}/common
+        run: |
+          echo "应用 F2FS 优化（拥塞/fsync/GC）..."
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/f2fs_reduce_congestion.patch" || true
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/f2fs_enlarge_min_fsync_blocks.patch" || true
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/reduce_gc_thread_sleep_time.patch" || true
+          echo "应用 EXT4 优化（journal 延迟提交）..."
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/increase_ext4_default_commit_age.patch" || true
+          echo "应用内存优化（memcpy/memset/缓存压力）..."
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/optimized_mem_operations.patch" || true
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/reduce_cache_pressure.patch" || true
+          echo "应用网络优化（TCP_NODELAY 强制启用）..."
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/force_tcp_nodelay.patch" || true
+          echo "应用日志静默（healthd/dashd 去噪）..."
+          patch -p1 --forward < "$ZZH_PATCHES/kernel_patches/wild/silence_system_logspam.patch" || true
 
       - name: 添加 BBG 防格机补丁
         if: inputs.use_bbg
